@@ -17,4 +17,12 @@ def index():
         return redirect(url_for('main.index'))
     form = session.pop('form', {})
     result = session.pop('result', None)
-    return render_template('form.html', result=result, form=form) 
+    return render_template('form.html', result=result, form=form)
+
+@main_bp.route('/privacy_zh.html')
+def privacy():
+    return render_template('privacy_zh.html')
+
+@main_bp.route('/terms_zh.html')
+def terms():
+    return render_template('terms_zh.html') 

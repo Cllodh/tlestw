@@ -45,3 +45,45 @@
 
 ---
 如有問題或建議，歡迎提出！ 
+
+## 合規與隱私政策
+
+- 本專案不會儲存任何用戶資料，所有計算皆於本地瀏覽器進行。
+- 頁面下方提供正式的「隱私權政策」與「服務條款」連結，內容涵蓋資料收集、Cookie、第三方服務、用戶權利、聯絡方式等，適合 Google 審核。
+- 若未來串接 Google 登入，政策將明確說明資料取得、用途、刪除方式，確保合規。
+
+## 專案結構
+
+```
+tlestw/
+├── app/                # Flask 主程式 package
+│   ├── __init__.py     # App 工廠與 blueprint 註冊
+│   ├── routes.py       # 主頁與靜態頁面路由
+│   ├── api.py          # 匯率查詢等 API 路由
+│   ├── templates/      # 所有 HTML 模板
+│   │   ├── form.html
+│   │   ├── privacy_zh.html
+│   │   └── terms_zh.html
+│   └── utils/          # 計算等輔助模組
+├── static/             # 靜態資源（JS、CSS、icon）
+├── run.py              # 啟動檔
+├── requirements.txt    # 依賴套件
+└── README.md
+```
+
+## API 說明
+
+- `/api/rate?country=國家名稱`：查詢即時匯率（TWD→當地貨幣），資料來源 UniRateAPI，支援快取。
+- 回傳格式：
+  ```json
+  { "rate": 0.221, "display": "1TWD=0.221HKD" }
+  ```
+
+## UI/UX 設計細節
+
+- 採用 Bootstrap 5、Bootstrap Icons，現代化卡片式設計。
+- 所有欄位高度、圓角、字型、間距統一，分組明確。
+- 國家欄位下拉選單，選「其他」時顯示自訂欄位。
+- 金額欄位支援多筆輸入，並即時計算加總提示。
+- 匯率欄位自動查詢，可手動調整，台灣自動為1。
+- 響應式設計，桌機雙欄、手機單欄，體驗流暢。 
