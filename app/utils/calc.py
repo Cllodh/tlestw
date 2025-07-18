@@ -21,4 +21,9 @@ def calculate_total(data):
         )
         return round(total, 2)
     except Exception:
-        return 0 
+        return 0
+
+FORMULA_DESCRIPTION = (
+    "機票＋住宿＋保險＋SIM＋票券＋刷卡（台幣）＋[換匯（台幣）＋原本有的貨幣（台幣）]－現餘（台幣）<br>"
+    "※ 刷卡、原本有的貨幣、現餘皆以匯率換算成台幣，換匯直接加總台幣。"
+) 

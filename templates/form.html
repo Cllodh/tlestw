@@ -106,13 +106,72 @@
             border-radius: 1.3rem;
             background: #2355d6;
             color: #fff;
-            font-size: 1.55rem;
-            font-weight: 900;
-            padding: 1.7rem 1.3rem;
-            margin-top: 2.5rem;
-            text-align: center;
+            font-size: 1.15rem;
+            font-weight: 700;
+            padding: 1.2rem 1.5rem 1.2rem 1.5rem;
+            margin-top: 1.2rem;
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+            text-align: left;
+            justify-content: space-between;
             box-shadow: 0 2px 12px rgba(35,85,214,0.09);
             letter-spacing: 1px;
+        }
+        .result-box-content {
+            font-size: 1.18rem;
+            gap: 0.7em;
+            display: flex;
+            align-items: center;
+            flex: 2 1 0;
+            min-width: 0;
+        }
+        .result-box-label {
+            font-size: 1.18rem;
+            font-weight: 700;
+            margin-right: 0.5em;
+            opacity: 0.97;
+        }
+        .result-box-content .bi-cash-coin {
+            font-size: 1.5rem;
+            margin-right: 0.3em;
+        }
+        .result-box-action {
+            flex: 1 1 0;
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            min-width: 120px;
+        }
+        .result-box-action a.btn {
+            font-size: 1.05rem;
+            padding: 0.45rem 1.1rem;
+            border-radius: 0.7rem;
+            box-shadow: 0 2px 8px rgba(35,85,214,0.10);
+            background: #fff;
+            color: #d32f2f;
+            border: 1.5px solid #d32f2f;
+            font-weight: 700;
+            transition: background 0.2s, color 0.2s, border 0.2s;
+        }
+        .result-box-action a.btn:hover {
+            background: #d32f2f;
+            color: #fff;
+            border-color: #d32f2f;
+        }
+        @media (max-width: 900px) {
+            .result-box {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 1rem;
+                padding: 1rem 0.5rem 1rem 0.5rem;
+            }
+            .result-box-action {
+                justify-content: center;
+                margin-top: 0.7rem;
+            }
         }
         .rate-box, .form-control.bg-light[name='rate'], .country-select {
             min-width: 0;
@@ -314,6 +373,7 @@
                         <div class="form-text text-primary small sum-hint" data-for="currency_left"></div>
                         <div class="form-text text-danger small" id="currency-left-error" style="display:none;"></div>
                         <div class="form-text text-secondary small" id="currency-left-maxhint"></div>
+                        <div class="form-text text-secondary small" id="currency-left-hint"></div>
                     </div>
                     <div class="col-12 col-md-6">
                         <label class="form-label"><i class="bi bi-graph-up"></i>匯率</label>
@@ -329,12 +389,68 @@
             <!-- <button type="submit" class="btn btn-primary w-100 py-2 mt-3"><i class="bi bi-calculator"></i> 計算總花費</button> -->
         </form>
         {% if result is not none %}
-        <div class="result-box" id="js-result-box">
-            <i class="bi bi-cash-coin"></i> <span>總花費 (TWD)：</span> {{ [result|float, 0]|max | round(2) }}
+        <!-- 旅程花費區塊卡片化（有結果時） -->
+        <div class="trip-cost-section card p-4 mb-4" style="border-radius:1.3rem;box-shadow:0 4px 24px rgba(35,85,214,0.10);background:#f8fafc;border:none;">
+            <div class="d-flex align-items-center mb-2" style="font-weight:800;font-size:1.18rem;color:#2355d6;">
+                <i class="bi bi-calculator" style="font-size:1.5rem;margin-right:0.5em;"></i>
+                旅程花費
+            </div>
+            <div class="trip-cost-formula card p-3 mb-2" style="background:#f3f6fa;border-radius:1em;border:none;font-size:1.01rem;color:#444;">
+                <div>計算公式：</div>
+                <div style="word-break:break-all;">{{ formula_description|safe }}</div>
+            </div>
+            <div style="font-size:1.13rem;font-weight:700;color:#2355d6;">
+                <span class="total-amount-disp" style="color:#2355d6;">{{ [result|float, 0]|max | round(2) }}</span>
+            </div>
         </div>
         {% else %}
-        <div class="result-box" id="js-result-box" style="display:block"></div>
+        <!-- 旅程花費區塊卡片化（無結果時） -->
+        <div class="trip-cost-section card p-4 mb-4" style="border-radius:1.3rem;box-shadow:0 4px 24px rgba(35,85,214,0.10);background:#f8fafc;border:none;">
+            <div class="d-flex align-items-center mb-2" style="font-weight:800;font-size:1.18rem;color:#2355d6;">
+                <i class="bi bi-calculator" style="font-size:1.5rem;margin-right:0.5em;"></i>
+                旅程花費
+            </div>
+            <div class="trip-cost-formula card p-3 mb-2" style="background:#f3f6fa;border-radius:1em;border:none;font-size:1.01rem;color:#444;">
+                <div>計算公式：</div>
+                <div style="word-break:break-all;">{{ formula_description|safe }}</div>
+            </div>
+            <div style="font-size:1.13rem;font-weight:700;color:#2355d6;">
+                總花費（TWD）：<span class="total-amount-zero">0</span>
+            </div>
+        </div>
         {% endif %}
+        <!-- 大漸層 Google 登入按鈕 -->
+        <div class="d-flex justify-content-center mt-4 mb-2">
+            <a href="/login" class="google-sync-btn">
+                <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google" width="28" height="28" style="margin-right:0.7em;vertical-align:middle;">
+                <span style="vertical-align:middle;">登入並同步</span>
+            </a>
+        </div>
+        <style>
+        .google-sync-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 260px;
+            font-size: 1.18rem;
+            font-weight: 700;
+            padding: 0.7em 0;
+            border-radius: 2em;
+            background: linear-gradient(90deg, #4f8cff 0%, #23d6a1 100%);
+            color: #fff;
+            border: none;
+            box-shadow: 0 2px 12px rgba(35,85,214,0.09);
+            letter-spacing: 1px;
+            transition: background 0.2s, box-shadow 0.2s, color 0.2s;
+            text-decoration: none;
+        }
+        .google-sync-btn:hover, .google-sync-btn:focus {
+            background: linear-gradient(90deg, #23d6a1 0%, #4f8cff 100%);
+            color: #fff;
+            box-shadow: 0 4px 16px rgba(35,85,214,0.13);
+            text-decoration: none;
+        }
+        </style>
     </div>
 </div>
 <footer class="text-center mt-5 mb-3 small text-secondary" style="opacity:0.85;">
@@ -478,7 +594,10 @@ function updateCurrencyLeft() {
     let val = exchange * rate + have;
     if (!isFinite(val)) val = 0;
     document.getElementById('currency-left').value = val ? val.toFixed(2) : '';
-    document.getElementById('currency-left-hint').textContent = val ? `= 換匯(${exchange}) × 匯率(${rate}) + 原本有的(${have}) = ${val.toFixed(2)}` : '';
+    var hintDiv = document.getElementById('currency-left-hint');
+    if (hintDiv) {
+        hintDiv.textContent = val ? `= 換匯(${exchange}) × 匯率(${rate}) + 原本有的(${have}) = ${val.toFixed(2)}` : '';
+    }
 }
 document.querySelector('[name="exchange"]').addEventListener('input', updateCurrencyLeft);
 document.querySelector('[name="currency_have"]').addEventListener('input', updateCurrencyLeft);
@@ -515,6 +634,52 @@ handleTaiwanRate();
 if (countrySelect.value === '台灣') {
     handleTaiwanRate();
 }
+
+// === 即時計算總花費（TWD） ===
+function parseMultiAmount(val) {
+    if (!val) return 0;
+    return val.split(/[,，;；\s]+/).map(x => parseFloat(x)).filter(x => !isNaN(x) && x >= 0).reduce((a, b) => a + b, 0);
+}
+function calcTotal() {
+    // 取得所有欄位值
+    const ticket = parseMultiAmount(document.querySelector('[name="ticket"]').value);
+    const hotel = parseMultiAmount(document.querySelector('[name="hotel"]').value);
+    const sim = parseMultiAmount(document.querySelector('[name="sim"]').value);
+    const tickets = parseMultiAmount(document.querySelector('[name="tickets"]').value);
+    const exchange = parseMultiAmount(document.querySelector('[name="exchange"]').value);
+    const insurance = parseMultiAmount(document.querySelector('[name="insurance"]').value);
+    const card = parseMultiAmount(document.querySelector('[name="card"]').value);
+    const currency_have = parseMultiAmount(document.querySelector('[name="currency_have"]').value);
+    const currency_left = parseMultiAmount(document.querySelector('[name="currency_left"]').value);
+    const rate = parseFloat(document.querySelector('[name="rate"]').value) || 0;
+    // 與後端一致的公式，只有 rate > 0 才做除法
+    let card_twd = (rate > 0) ? (card / rate) : 0;
+    let currency_have_twd = (rate > 0) ? (currency_have / rate) : 0;
+    let currency_left_twd = (rate > 0) ? (currency_left / rate) : 0;
+    let total = ticket + hotel + insurance + sim + tickets + card_twd + (exchange + currency_have_twd - currency_left_twd);
+    if (!isFinite(total)) total = 0;
+    return Math.max(0, Math.round(total * 100) / 100);
+}
+function updateTotalDisplay() {
+    const total = calcTotal();
+    // 有結果時
+    let totalSpan = document.querySelector('.trip-cost-section .total-amount-disp');
+    if (totalSpan) {
+        totalSpan.textContent = total;
+    }
+    // 無結果時
+    let totalZero = document.querySelector('.trip-cost-section .total-amount-zero');
+    if (totalZero) {
+        totalZero.textContent = total;
+    }
+}
+// 綁定所有金額欄位
+['ticket','hotel','sim','tickets','exchange','insurance','card','currency_have','currency_left','rate'].forEach(function(name){
+    let el = document.querySelector('[name="'+name+'"]');
+    if (el) el.addEventListener('input', updateTotalDisplay);
+});
+// 初始化
+updateTotalDisplay();
 </script>
 </body>
 </html> 

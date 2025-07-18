@@ -1,5 +1,5 @@
 from flask import Blueprint, render_template, request, redirect, url_for, session
-from app.utils.calc import calculate_total
+from app.utils.calc import calculate_total, FORMULA_DESCRIPTION
 
 main_bp = Blueprint('main', __name__)
 
@@ -17,7 +17,7 @@ def index():
         return redirect(url_for('main.index'))
     form = session.pop('form', {})
     result = session.pop('result', None)
-    return render_template('form.html', result=result, form=form)
+    return render_template('form.html', result=result, form=form, formula_description=FORMULA_DESCRIPTION)
 
 @main_bp.route('/privacy_zh.html')
 def privacy():
